@@ -1,0 +1,33 @@
+version: "3.9" # specify the version of the compose file format
+
+services: # define the services or containers that make up your application
+
+  web: # name of the first service
+    image: nginx # name of the image to use for this service
+    ports: # list of ports to expose on the host machine
+      - "80:80"
+    depends_on: # list of services that this service depends on
+      - app
+
+  app: # name of the second service
+    build: ./app # path to the directory containing the Dockerfile for this service
+    environment: # list of environment variables to pass to this service
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASS=secret
+      - DB_NAME=todos
+    volumes: # list of volumes to mount on this service
+      - ./app:/app
+
+  db: # name of the third service
+    image: mysql # name of the image to use for this service
+    environment: # list of environment variables to pass to this service
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=todos
+
+volumes: # define any named volumes used by the services
+  db_data: # name of the volume for persisting database data
+
+networks: # define any custom networks used by the services
+  default: # name of the default network
+    driver: bridge # driver to use for this network
